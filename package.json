@@ -1,0 +1,30 @@
+{
+  "name": "apilint",
+  "version": "0.1.0",
+  "description": "Extensible REST API linter utility",
+  "main": "src/index.js",
+  "bin": {
+    "apilint": "./bin/apilint.js"
+  },
+  "scripts": {
+    "test": "eslint src && mocha --recursive"
+  },
+  "author": "Daniel G. Taylor <danielgtaylor@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^4.8.2",
+    "cli-color": "^1.1.0",
+    "inflection": "^1.10.0",
+    "js-yaml": "^3.6.1",
+    "mateo": "^0.3.0",
+    "pad": "^1.0.1",
+    "require-dir": "^0.3.1",
+    "wordwrap": "^1.0.0",
+    "yargs": "^6.2.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.9.1",
+    "mocha": "^3.1.2"
+  }
+}
