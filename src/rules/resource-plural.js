@@ -22,7 +22,7 @@ module.exports = function *resourcePlural(api, linter) {
         continue;
       }
 
-      if (piece.match(/v[0-9]+/)) {
+      if (piece.match(/v[0-9]+/) || piece.match(/^[0-9]+$/)) {
         // Skip possible version component
         continue;
       }

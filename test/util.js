@@ -3,11 +3,15 @@ const Mateo = require('mateo');
 
 // Return a promise which resolves to a list of issues given
 // a rule name and API description.
-exports.getIssues = function getIssues(ruleName, apiDescription) {
+exports.getIssues = function getIssues(ruleName, apiDescription, config={}) {
   return new Promise((resolve, reject) => {
     const linter = new ApiLinter();
 
-    linter[ruleName]('error');
+    if (config.severity === undefined) {
+      config.severity = 'error';
+    }
+
+    linter[ruleName](config);
 
     Mateo.parse(apiDescription, (err, api) => {
       if (err) {

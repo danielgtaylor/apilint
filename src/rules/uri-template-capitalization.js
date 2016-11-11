@@ -11,6 +11,11 @@ module.exports = function *uriTemplateCapitalization(api, linter, config) {
     const template = resource.uriTemplate;
 
     for (const piece of template.split('/')) {
+      if (piece.match(/v[0-9]+/)) {
+        // Skip version component
+        continue;
+      }
+
       const cleaned = piece.replace(/\{.*\}/g, '');
       const expected = recase(cleaned, style);
 
@@ -27,6 +32,11 @@ module.exports = function *uriTemplateCapitalization(api, linter, config) {
         const actionTemplate = resource.uriTemplate;
 
         for (const actionPiece of actionTemplate.split('/')) {
+          if (actionPiece.match(/v[0-9]+/)) {
+            // Skip version component
+            continue;
+          }
+
           const actionCleaned = actionPiece.replace(/\{.*\}/g, '');
           const actionExpected = recase(actionCleaned, style);
 

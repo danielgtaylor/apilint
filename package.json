@@ -7,7 +7,8 @@
     "apilint": "./bin/apilint.js"
   },
   "scripts": {
-    "test": "eslint src && mocha --recursive"
+    "test": "eslint src && mocha --recursive",
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- --recursive --reporter dot"
   },
   "author": "Daniel G. Taylor <danielgtaylor@gmail.com>",
   "license": "MIT",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "eslint": "^3.9.1",
+    "istanbul": "^0.4.5",
     "mocha": "^3.1.2"
   }
 }

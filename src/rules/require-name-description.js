@@ -1,4 +1,12 @@
 module.exports = function *requireNameDescription(api, linter, config) {
+  if (config.names === undefined) {
+    config.names = [];
+  }
+
+  if (config.descriptions === undefined) {
+    config.descriptions = [];
+  }
+
   if (config.names.includes('api') && !api.name) {
     yield linter.issue(
       'API requires name',
