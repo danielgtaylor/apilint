@@ -29,7 +29,7 @@ module.exports = function *uriTemplateCapitalization(api, linter, config) {
 
     for (const action of resource.actions) {
       if (action.hasOwnUriTemplate) {
-        const actionTemplate = resource.uriTemplate;
+        const actionTemplate = action.uriTemplate;
 
         for (const actionPiece of actionTemplate.split('/')) {
           if (actionPiece.match(/v[0-9]+/)) {
@@ -40,7 +40,7 @@ module.exports = function *uriTemplateCapitalization(api, linter, config) {
           const actionCleaned = actionPiece.replace(/\{.*\}/g, '');
           const actionExpected = recase(actionCleaned, style);
 
-          if (actionPiece !== actionExpected) {
+          if (actionCleaned !== actionExpected) {
             yield linter.issue(
               `Action URI template piece '${actionCleaned}' should be cased like '${actionExpected}'`,
               action.uriTemplateSourcemap

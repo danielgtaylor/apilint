@@ -36,6 +36,23 @@ describe('URI template capitalization', () => {
     });
   });
 
+  it('Exposes issue when action overrides URI template', () => {
+    const apiDescription = `# API Title
+
+## Resources [/resources]
+
+### Get a resource [GET /resources/SomeWeirdSubresource/{id}]
+
++ Response 200 (text/plain)
+
+        Hello, world
+`;
+
+    return getIssues('uriTemplateCapitalization', apiDescription).then((issues) => {
+      expect(issues).to.have.length(1);
+    });
+  });
+
   it('Ignores version component', () => {
     const apiDescription = JSON.stringify({
       swagger: '2.0',

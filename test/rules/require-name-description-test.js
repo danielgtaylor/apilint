@@ -2,12 +2,12 @@ const {expect} = require('chai');
 const {getIssues} = require('../util');
 
 const CONFIG = {
-  names: ['resource'],
+  names: ['resource', 'action', 'request', 'response'],
   descriptions: ['api']
 };
 
-describe('Require HTTPS', () => {
-  it('Exposes issue when missing resource name', () => {
+describe('Require name & description', () => {
+  it('Exposes issue when missing names', () => {
     const apiDescription = JSON.stringify({
       swagger: '2.0',
       info: {
@@ -20,7 +20,10 @@ describe('Require HTTPS', () => {
           get: {
             responses: {
               '200': {
-                description: ''
+                description: '',
+                examples: {
+                  'application/json': '{}'
+                }
               }
             }
           }
@@ -29,7 +32,7 @@ describe('Require HTTPS', () => {
     });
 
     return getIssues('requireNameDescription', apiDescription, CONFIG).then((issues) => {
-      expect(issues).to.have.length(1);
+      expect(issues).to.have.length(4);
     });
   });
 
