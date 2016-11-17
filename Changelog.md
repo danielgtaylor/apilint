@@ -2,6 +2,8 @@
 
 - Consume new Mateo source maps. Adds support for [Hercule]()-style
   transclusion when using API Blueprint.
+- Ensure tags with no name get ignored. These are artifacts of the input
+  serialization format (API Elements, currently).
 
 # 0.3.0 - 2016-11-12
 

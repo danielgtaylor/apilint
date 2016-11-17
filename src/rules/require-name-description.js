@@ -29,7 +29,7 @@ module.exports = function *requireNameDescription(api, linter, config) {
       );
     }
 
-    if (config.descriptions.includes('tag') && !tag.description) {
+    if (config.descriptions.includes('tag') && tag.name && !tag.description) {
       yield linter.issue(
         `Tag '${tag.id}' requires description`,
         tag
