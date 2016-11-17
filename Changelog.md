@@ -1,3 +1,8 @@
+# Unreleased
+
+- Consume new Mateo source maps. Adds support for [Hercule]()-style
+  transclusion when using API Blueprint.
+
 # 0.3.0 - 2016-11-12
 
 - Add tests for remaining rules and get better coverage for a few cases,

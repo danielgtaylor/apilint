@@ -63,7 +63,7 @@ function getLineInfo(source, position) {
   return {number, remainder, lines};
 }
 
-function getSourcemap(element) {
+function getFirstSourcemap(element) {
   let current = element;
 
   while (current && (!current.sourcemap || current.sourcemap.length < 1) && current.parent) {
@@ -71,10 +71,10 @@ function getSourcemap(element) {
   }
 
   if (current instanceof Array) {
-    return current;
+    return current[0];
   }
 
-  return current && current.sourcemap;
+  return current && current.sourcemap && current.sourcemap[0];
 }
 
 if (argv.version) {
@@ -119,7 +119,10 @@ fs.readFile(argv._[0], 'utf8', (err, source) => {
     process.exit(1);
   }
 
-  Mateo.parse(source, (parseErr, parsed) => {
+  // Switch to input file base path so relative references work.
+  process.chdir(path.dirname(argv._[0]));
+
+  Mateo.parse(source, {filename: argv._[0]}, (parseErr, parsed, fullSource) => {
     if (parseErr) {
       console.log(parseErr);
       process.exit(1);
@@ -130,18 +133,31 @@ fs.readFile(argv._[0], 'utf8', (err, source) => {
       warn: 0
     };
 
-    const issues = [...linter.lint(parsed, source)];
+    const issues = [...linter.lint(parsed)];
 
     // Sort by sourcemap starting character
+    const knownSources = new Set();
     issues.sort((a, b) => {
-      as = getSourcemap(a.element);
-      bs = getSourcemap(b.element);
+      const as = getFirstSourcemap(a.element);
+      const bs = getFirstSourcemap(b.element);
 
       if (!(as && bs)) {
         return 1;
       }
 
-      return as[0][0] - bs[0][0];
+      knownSources.add(as.original.source);
+      knownSources.add(bs.original.source);
+
+      const asId = `${as.original.source}${as.original.line}`;
+      const bsId = `${bs.original.source}${bs.original.line}`;
+
+      if (asId < bsId) {
+        return -1;
+      } else if (asId > bsId) {
+        return 1;
+      }
+
+      return 0;
     });
 
     for (const issue of issues) {
@@ -160,20 +176,24 @@ fs.readFile(argv._[0], 'utf8', (err, source) => {
 
       counts[issue.severity]++;
 
-      const sourcemap = getSourcemap(issue.element);
+      const sourcemap = getFirstSourcemap(issue.element);
 
       let info = {number: '?', remainder: '?', lines: []};
 
       if (sourcemap) {
-        info = getLineInfo(source, sourcemap[0][0]);
+        info = getLineInfo(fullSource, sourcemap.generated.pos);
       }
 
-      msg += clc.xterm(32)(pad(5, info.number)) + clc.xterm(240)(':') + clc.xterm(25)(info.remainder);
+      msg += clc.xterm(32)(pad(5, sourcemap.original.line)) + clc.xterm(240)(':') + clc.xterm(25)(sourcemap.original.column);
 
       msg += severityColor(` ${issue.severity} `);
 
-      msg += wrap(clc.getStrippedLength(msg), WIDTH - 1)(issue.message +
-        ' ' + clc.xterm(240)(issue.ruleId)).trim() + '\n\n';
+      if (knownSources.size > 1) {
+        msg += clc.xterm(66)(path.basename(sourcemap.original.source)) + ' ' + clc.xterm(240)(issue.ruleId).trim() + `\n${wrap(8, WIDTH - 1)(issue.message)}\n\n`;
+      } else {
+        msg += wrap(clc.getStrippedLength(msg), WIDTH - 1)(issue.message +
+          ' ' + clc.xterm(240)(issue.ruleId)).trim() + '\n\n';
+      }
 
       let minPrePadding = null;
       for (let line of info.lines) {
@@ -206,7 +226,7 @@ fs.readFile(argv._[0], 'utf8', (err, source) => {
       console.log(msg);
     }
 
-    console.log(clc.red(`${counts['error'] || 0} Error${counts['error'] === 1 ? '' : 's'}`) + ' ' + clc.yellow(`${counts['warn'] || 0} Warning${counts['warn'] === 1 ? '' : 's'}`));
+    console.log(clc.red(`${counts['error'] || 0} Error${counts['error'] === 1 ? '' : 's'}`) + ' ' + clc.yellow(`${counts['warn'] || 0} Warning${counts['warn'] === 1 ? '' : 's'}`) +  ' ' + clc.xterm(32)(`${counts['info'] || 0} Info`));
 
     process.exit(counts['error'] + counts['warn'] > 0 ? 1 : 0);
   });
