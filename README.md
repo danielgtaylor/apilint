@@ -2,12 +2,14 @@
 
 A linting utility for API descriptions that allows you to set rules for API design, similar to how e.g. ESLint works to enforce good practices when writing Javascript. API Lint can be configured to run on CI hosts and fail any build which does not pass the configured rules, allowing it to be deployed organization-wide to enforce design guidelines.
 
+<img width="614" alt="screenshot" src="https://cloud.githubusercontent.com/assets/22035690/20418197/4125d470-ad00-11e6-851d-ff1a0d6f0d43.png">
+
 Rules are easy to define and built on [Mateo](https://github.com/danielgtaylor/mateo#mateo-api-description-library), an abstraction library for API description formats. Each rule has an associated severity (`info`, `warn`, or `error`) that allows you to set suggestions or hard limits that will cause the `apilint` utility to return an error.
 
 ## Supported API Description Formats
 
 * [Swagger 2.0](http://swagger.io/specification/)
-* [API Blueprint](https://apiblueprint.org/)
+* [API Blueprint](https://apiblueprint.org/) with support for [Hercule transclusion](https://github.com/jamesramsay/hercule)
 
 ## Usage
 
@@ -58,6 +60,8 @@ The following checks are executed by default.
 - 400-level errors should include a descriptive body
 - URI template components, URI template parameters, and request/response body properties should use `snake_casing`.
 - Request/response bodies should use JSON, and JSON examples should validate against any defined schemas.
+
+Additionally, any parser annotations are exposed with whatever severity the parser assigns to them. For example, it's possible that an API Blueprint action may parse but contain no response, so this is exposed as a linting error.
 
 ## Configuration
 

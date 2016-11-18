@@ -1,6 +1,11 @@
+# 0.5.0 - 2016-11-17
+
+- Expose parser annotations as linter issues.
+- Use the new Mateo promise interface to simplify test utilities.
+
 # 0.4.0 - 2016-11-16
 
-- Consume new Mateo source maps. Adds support for [Hercule]()-style
+- Consume new Mateo source maps. Adds support for [Hercule](https://github.com/jamesramsay/hercule)-style
   transclusion when using API Blueprint.
 - Ensure tags with no name get ignored. These are artifacts of the input
   serialization format (API Elements, currently).

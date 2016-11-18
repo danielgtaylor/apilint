@@ -54,6 +54,7 @@ class ApiLinter {
     is present.
   */
   useDefaults() {
+    this.parserAnnotation('info');
     this.resourceNoun('warn');
     this.resourcePlural('warn');
     this.requireHttps('error');
@@ -91,7 +92,7 @@ class ApiLinter {
       for (const issue of check(apiDescription, this, config)) {
         // Attach some metadata to the issue before yielding
         issue.ruleId = config.id;
-        issue.severity = config.severity;
+        issue.severity = issue.severity || config.severity;
         yield issue;
       }
     }
@@ -100,8 +101,8 @@ class ApiLinter {
   /*
     Create a new issue. This is used by the rules to return issues.
   */
-  issue(message, element) {
-    return {message, element};
+  issue(message, element, severityOverride) {
+    return {message, element, severity: severityOverride};
   }
 }
 
