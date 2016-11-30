@@ -1,3 +1,8 @@
+# 0.6.0 - 2016-11-29
+
+- Upgrade to Mateo 0.6.0, which supports more accurate sourcemaps and action schema handling.
+- Tweaks to the `response-error-body` rule to prevent false positives.
+
 # 0.5.0 - 2016-11-17
 
 - Expose parser annotations as linter issues.
